@@ -1,4 +1,5 @@
 from card import Card
+from poker import evaluate_hand
 
 def test_card_creation():
     card = Card('A', 'H')
@@ -26,8 +27,8 @@ def test_card_comparison():
     low_card = Card('K', 'H')
     same_rank_diff_suit = Card('A', 'D')
 
-    assert high_card > low_card  
-    assert high_card == same_rank_diff_suit 
+    assert high_card > low_card
+    assert high_card != same_rank_diff_suit
 
 def test_high_card():
     """Test détection high card"""
