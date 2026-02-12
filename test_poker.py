@@ -1,5 +1,5 @@
 from card import Card
-from poker import evaluate_hand
+from poker import evaluate_hand, find_winners
 
 def test_card_creation():
     card = Card('A', 'H')
