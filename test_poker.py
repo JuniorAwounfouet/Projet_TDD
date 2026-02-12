@@ -61,3 +61,26 @@ def test_three_kind():
     assert cat == 'Three of a Kind'
     ranks = sorted([c.rank for c in chosen])
     assert ranks.count(14) == 3 
+
+def test_straight():
+    cards = [Card('9','H'), Card('8','D'), Card('7','C'), Card('6','S'), Card('5','H'), Card('K','D'), Card('Q','C')]
+    cat, chosen, key = evaluate_hand(cards)
+    assert cat == 'Straight'
+    ranks = sorted([c.rank for c in chosen])
+    assert ranks == [5,6,7,8,9]
+
+def test_wheel_straight():
+    cards = [Card('A','H'), Card('2','D'), Card('3','C'), Card('4','S'), Card('5','H'), Card('K','D'), Card('Q','C')]
+    cat, chosen, key = evaluate_hand(cards)
+    assert cat == 'Straight'
+    ranks = sorted([c.rank for c in chosen])
+    assert ranks == [2,3,4,5,14] 
+
+def test_flush():
+    cards = [Card('A','H'), Card('J','H'), Card('9','H'), Card('4','H'), Card('2','C'), Card('6','H'), Card('K','D')]
+    cat, chosen, key = evaluate_hand(cards)
+    assert cat == 'Flush'
+    suits = [c.suit for c in chosen]
+    assert all(s == 'H' for s in suits) 
+    ranks = sorted([c.rank for c in chosen], reverse=True)
+    assert ranks == [14,11,9,6,4]  
