@@ -3,7 +3,7 @@ from poker import evaluate_hand
 
 def test_card_creation():
     card = Card('A', 'H')
-    assert card.rank == 14  # A = 14
+    assert card.rank == 14 
     assert card.suit == 'H'
 
 def test_card_equality():
@@ -39,3 +39,11 @@ def test_high_card():
     assert set(chosen).issubset(set(cards))
     ranks = [c.rank for c in chosen]
     assert ranks == [14, 13, 12, 11, 9]  
+
+def test_one_pair():
+    cards = [Card('A','H'), Card('A','D'), Card('K','C'), Card('Q','S'), Card('J','H'), Card('9','D'), Card('8','C')]
+    cat, chosen, key = evaluate_hand(cards)
+    assert cat == 'One Pair'
+    assert len(chosen) == 5
+    ranks = sorted([c.rank for c in chosen])
+    assert ranks.count(14) == 2 
