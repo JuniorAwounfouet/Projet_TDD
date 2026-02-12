@@ -84,3 +84,17 @@ def test_flush():
     assert all(s == 'H' for s in suits) 
     ranks = sorted([c.rank for c in chosen], reverse=True)
     assert ranks == [14,11,9,6,4]  
+
+def test_full_house():
+    cards = [Card('A','H'), Card('A','D'), Card('A','C'), Card('K','S'), Card('K','H'), Card('9','D'), Card('8','C')]
+    cat, chosen, key = evaluate_hand(cards)
+    assert cat == 'Full House'
+    ranks = sorted([c.rank for c in chosen])
+    assert ranks.count(14) == 3 and ranks.count(13) == 2  # Trois As, deux Rois
+
+def test_four_kind():
+    cards = [Card('A','H'), Card('A','D'), Card('A','C'), Card('A','S'), Card('K','H'), Card('9','D'), Card('8','C')]
+    cat, chosen, key = evaluate_hand(cards)
+    assert cat == 'Four of a Kind'
+    ranks = sorted([c.rank for c in chosen])
+    assert ranks.count(14) == 4
