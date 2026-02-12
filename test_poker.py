@@ -26,5 +26,15 @@ def test_card_comparison():
     low_card = Card('K', 'H')
     same_rank_diff_suit = Card('A', 'D')
 
-    assert high_card > low_card  # A > K
-    assert high_card == same_rank_diff_suit  # Même rang, ordre des couleurs
+    assert high_card > low_card  
+    assert high_card == same_rank_diff_suit 
+
+def test_high_card():
+    """Test détection high card"""
+    cards = [Card('A','H'), Card('K','D'), Card('Q','C'), Card('J','S'), Card('9','H'), Card('8','D'), Card('7','C')]
+    cat, chosen, key = evaluate_hand(cards)
+    assert cat == 'High Card'
+    assert len(chosen) == 5
+    assert set(chosen).issubset(set(cards))
+    ranks = [c.rank for c in chosen]
+    assert ranks == [14, 13, 12, 11, 9]  
