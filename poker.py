@@ -1,7 +1,7 @@
 from collections import Counter
 from card import Card
 
-CATEGORY_RANKS = {'High Card': 0, 'One Pair': 1, 'Two Pair': 2, 'Three of a Kind': 3}
+CATEGORY_RANKS = {'High Card': 0, 'One Pair': 1, 'Two Pair': 2, 'Three of a Kind': 3, 'Straight': 4, 'Flush': 5}
 
 def get_high_card(cards):
     """ Évalue une high card """
@@ -57,7 +57,53 @@ def get_three_kind(cards):
     key = (three_rank,) + tuple(c.rank for c in kickers)
     return 'Three of a Kind', chosen, (3,) + key
 
+def get_straight(cards):
+    """Détecte une straight, wheel"""
+    ranks_set = set(c.rank for c in cards)
+    
+    if {14, 2, 3, 4, 5}.issubset(ranks_set):
+        straight_ranks = [5, 4, 3, 2, 14]
+        chosen = []
+        for r in straight_ranks:
+            card = next(c for c in cards if c.rank == r)
+            chosen.append(card)
+        key = (5, 4, 3, 2, 1)  
+        return 'Straight', chosen, (4,) + key
+    
+    sorted_ranks = sorted(ranks_set)
+    for i in range(len(sorted_ranks) - 4):
+        if sorted_ranks[i + 4] - sorted_ranks[i] == 4:
+            straight_ranks = sorted_ranks[i:i + 5][::-1]
+            for r in straight_ranks:
+                card = next(c for c in cards if c.rank == r)
+                chosen.append(card)
+            key = tuple(straight_ranks)
+            return 'Straight', chosen, (4,) + key
+    return None
+def get_flush(cards):
+    """Détecte une flush"""
+    suit_count = Counter(c.suit for c in cards)
+    flush_suits = [s for s, count in suit_count.items() if count >= 5]
+    if not flush_suits:
+        return None
+    
+    suit = flush_suits[0]
+    flush_cards = sorted([c for c in cards if c.suit == suit], reverse=True)
+    chosen = flush_cards[:5]
+    ranks = [c.rank for c in chosen]
+    key = tuple(ranks)
+    return 'Flush', chosen, (5,) + key
+
 def evaluate_hand(cards):
+
+    fl = get_flush(cards)
+    if fl:
+        return fl
+
+    st = get_straight(cards)
+    if st:
+        return st
+    
     tk = get_three_kind(cards)
     if tk:
         return tk
