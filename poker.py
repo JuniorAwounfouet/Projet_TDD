@@ -74,6 +74,7 @@ def get_straight(cards):
     for i in range(len(sorted_ranks) - 4):
         if sorted_ranks[i + 4] - sorted_ranks[i] == 4:
             straight_ranks = sorted_ranks[i:i + 5][::-1]
+            chosen = []
             for r in straight_ranks:
                 card = next(c for c in cards if c.rank == r)
                 chosen.append(card)
