@@ -1,8 +1,9 @@
 from card import Card
+from poker import evaluate_hand, find_winners
 
 def test_card_creation():
     card = Card('A', 'H')
-    assert card.rank == 14  # A = 14
+    assert card.rank == 14 
     assert card.suit == 'H'
 
 def test_card_equality():
@@ -26,5 +27,90 @@ def test_card_comparison():
     low_card = Card('K', 'H')
     same_rank_diff_suit = Card('A', 'D')
 
-    assert high_card > low_card  # A > K
-    assert high_card == same_rank_diff_suit  # Même rang, ordre des couleurs
+    assert high_card > low_card
+    assert high_card != same_rank_diff_suit
+
+def test_high_card():
+    """Test détection high card"""
+    cards = [Card('A','H'), Card('K','D'), Card('Q','C'), Card('J','S'), Card('9','H'), Card('8','D'), Card('7','C')]
+    cat, chosen, key = evaluate_hand(cards)
+    assert cat == 'High Card'
+    assert len(chosen) == 5
+    assert set(chosen).issubset(set(cards))
+    ranks = [c.rank for c in chosen]
+    assert ranks == [14, 13, 12, 11, 9]  
+
+def test_one_pair():
+    cards = [Card('A','H'), Card('A','D'), Card('K','C'), Card('Q','S'), Card('J','H'), Card('9','D'), Card('8','C')]
+    cat, chosen, key = evaluate_hand(cards)
+    assert cat == 'One Pair'
+    assert len(chosen) == 5
+    ranks = sorted([c.rank for c in chosen])
+    assert ranks.count(14) == 2 
+
+def test_two_pair():
+    cards = [Card('A','H'), Card('A','D'), Card('K','C'), Card('K','S'), Card('J','H'), Card('9','D'), Card('8','C')]
+    cat, chosen, key = evaluate_hand(cards)
+    assert cat == 'Two Pair'
+    ranks = sorted([c.rank for c in chosen])
+    assert ranks.count(14) == 2 and ranks.count(13) == 2  # Paire d'As et de Rois
+
+def test_three_kind():
+    cards = [Card('A','H'), Card('A','D'), Card('A','C'), Card('K','S'), Card('J','H'), Card('9','D'), Card('8','C')]
+    cat, chosen, key = evaluate_hand(cards)
+    assert cat == 'Three of a Kind'
+    ranks = sorted([c.rank for c in chosen])
+    assert ranks.count(14) == 3 
+
+def test_straight():
+    cards = [Card('9','H'), Card('8','D'), Card('7','C'), Card('6','S'), Card('5','H'), Card('K','D'), Card('Q','C')]
+    cat, chosen, key = evaluate_hand(cards)
+    assert cat == 'Straight'
+    ranks = sorted([c.rank for c in chosen])
+    assert ranks == [5,6,7,8,9]
+
+def test_wheel_straight():
+    cards = [Card('A','H'), Card('2','D'), Card('3','C'), Card('4','S'), Card('5','H'), Card('K','D'), Card('Q','C')]
+    cat, chosen, key = evaluate_hand(cards)
+    assert cat == 'Straight'
+    ranks = sorted([c.rank for c in chosen])
+    assert ranks == [2,3,4,5,14] 
+
+def test_flush():
+    cards = [Card('A','H'), Card('J','H'), Card('9','H'), Card('4','H'), Card('2','C'), Card('6','H'), Card('K','D')]
+    cat, chosen, key = evaluate_hand(cards)
+    assert cat == 'Flush'
+    suits = [c.suit for c in chosen]
+    assert all(s == 'H' for s in suits) 
+    ranks = sorted([c.rank for c in chosen], reverse=True)
+    assert ranks == [14,11,9,6,4]  
+
+def test_full_house():
+    cards = [Card('A','H'), Card('A','D'), Card('A','C'), Card('K','S'), Card('K','H'), Card('9','D'), Card('8','C')]
+    cat, chosen, key = evaluate_hand(cards)
+    assert cat == 'Full House'
+    ranks = sorted([c.rank for c in chosen])
+    assert ranks.count(14) == 3 and ranks.count(13) == 2  # Trois As, deux Rois
+
+def test_four_kind():
+    cards = [Card('A','H'), Card('A','D'), Card('A','C'), Card('A','S'), Card('K','H'), Card('9','D'), Card('8','C')]
+    cat, chosen, key = evaluate_hand(cards)
+    assert cat == 'Four of a Kind'
+    ranks = sorted([c.rank for c in chosen])
+    assert ranks.count(14) == 4
+
+def test_straight_flush():
+    """Test de la détection d'une straight flush"""
+    cards = [Card('A','H'), Card('2','H'), Card('3','H'), Card('4','H'), Card('5','H'), Card('9','D'), Card('8','C')]
+    cat, chosen, key = evaluate_hand(cards)
+    assert cat == 'Straight Flush'
+    suits = [c.suit for c in chosen]
+    assert all(s == 'H' for s in suits)  
+
+def test_compare_high_card():
+    """Test de comparaison entre joueurs"""
+    board = [Card('A','H'), Card('K','D'), Card('J','C'), Card('9','S'), Card('8','H')]
+    player1 = [Card('Q','D'), Card('10','C')]
+    player2 = [Card('Q','S'), Card('7','C')]
+    winners, results = find_winners(board, [player1, player2])
+    assert winners == [0] 
