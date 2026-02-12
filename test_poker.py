@@ -98,3 +98,11 @@ def test_four_kind():
     assert cat == 'Four of a Kind'
     ranks = sorted([c.rank for c in chosen])
     assert ranks.count(14) == 4
+
+def test_straight_flush():
+    """Test de la détection d'une straight flush"""
+    cards = [Card('A','H'), Card('2','H'), Card('3','H'), Card('4','H'), Card('5','H'), Card('9','D'), Card('8','C')]
+    cat, chosen, key = evaluate_hand(cards)
+    assert cat == 'Straight Flush'
+    suits = [c.suit for c in chosen]
+    assert all(s == 'H' for s in suits)  
