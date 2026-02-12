@@ -53,7 +53,7 @@ def test_two_pair():
     cat, chosen, key = evaluate_hand(cards)
     assert cat == 'Two Pair'
     ranks = sorted([c.rank for c in chosen])
-    assert ranks.count(14) == 2 and ranks.count(13) == 2  
+    assert ranks.count(14) == 2 and ranks.count(13) == 2  # Paire d'As et de Rois
 
 def test_three_kind():
     cards = [Card('A','H'), Card('A','D'), Card('A','C'), Card('K','S'), Card('J','H'), Card('9','D'), Card('8','C')]
@@ -90,7 +90,7 @@ def test_full_house():
     cat, chosen, key = evaluate_hand(cards)
     assert cat == 'Full House'
     ranks = sorted([c.rank for c in chosen])
-    assert ranks.count(14) == 3 and ranks.count(13) == 2  
+    assert ranks.count(14) == 3 and ranks.count(13) == 2  # Trois As, deux Rois
 
 def test_four_kind():
     cards = [Card('A','H'), Card('A','D'), Card('A','C'), Card('A','S'), Card('K','H'), Card('9','D'), Card('8','C')]
