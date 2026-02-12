@@ -106,3 +106,11 @@ def test_straight_flush():
     assert cat == 'Straight Flush'
     suits = [c.suit for c in chosen]
     assert all(s == 'H' for s in suits)  
+
+def test_compare_high_card():
+    """Test de comparaison entre joueurs"""
+    board = [Card('A','H'), Card('K','D'), Card('J','C'), Card('9','S'), Card('8','H')]
+    player1 = [Card('Q','D'), Card('10','C')]
+    player2 = [Card('Q','S'), Card('7','C')]
+    winners, results = find_winners(board, [player1, player2])
+    assert winners == [0] 
