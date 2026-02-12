@@ -174,3 +174,18 @@ def evaluate_hand(cards):
         return op
     
     return get_high_card(cards)
+
+def find_winners(board, players):
+    """Compare plusieurs joueurs et retourne les gagnants et leurs mains"""
+    results = []
+    for player_holes in players:
+        all_cards = board + player_holes
+        cat, chosen, key = evaluate_hand(all_cards)
+        results.append((cat, chosen, key))
+    
+    if not results:
+        return [], []
+    
+    max_key = max(r[2] for r in results)
+    winners = [i for i, r in enumerate(results) if r[2] == max_key]
+    return winners, results
