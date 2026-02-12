@@ -47,3 +47,17 @@ def test_one_pair():
     assert len(chosen) == 5
     ranks = sorted([c.rank for c in chosen])
     assert ranks.count(14) == 2 
+
+def test_two_pair():
+    cards = [Card('A','H'), Card('A','D'), Card('K','C'), Card('K','S'), Card('J','H'), Card('9','D'), Card('8','C')]
+    cat, chosen, key = evaluate_hand(cards)
+    assert cat == 'Two Pair'
+    ranks = sorted([c.rank for c in chosen])
+    assert ranks.count(14) == 2 and ranks.count(13) == 2  # Paire d'As et de Rois
+
+def test_three_kind():
+    cards = [Card('A','H'), Card('A','D'), Card('A','C'), Card('K','S'), Card('J','H'), Card('9','D'), Card('8','C')]
+    cat, chosen, key = evaluate_hand(cards)
+    assert cat == 'Three of a Kind'
+    ranks = sorted([c.rank for c in chosen])
+    assert ranks.count(14) == 3 
